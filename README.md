@@ -1,3 +1,3 @@
 # Create Vagrant lab with Cisco vIOS
-Пример файла Vagrant для создания лабы на основе vIOS
+Пример лабы с использованием Vagrant, Cisco vIOS и Ansible.
 ![Vagrant_map](vagrant_map.png)
