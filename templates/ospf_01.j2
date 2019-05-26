@@ -1,0 +1,30 @@
+{# Configure main processes OSPF #}
+no router ospf 1
+router ospf 1
+{# Configure addition options of ospf processes#}
+{% if 'ospf_proc' in host %}
+{% for rline in host.ospf_proc %}
+ {{rline}}
+{% endfor %}
+{% endif %}
+{# Configure networks for OSPF #}
+{% for net in host.ospf_networks %}
+ network {{ net['net'] | ipaddr('network') }} {{ net['net'] | ipaddr('hostmask') }} area {{ net['area'] }}
+{% endfor %}
+ exit
+{# Configure OSPF on interfaces #}
+{% if 'ospf_int' in host %}
+{% for rline in host.ospf_int %}
+int {{rline['int']}}
+{# Configure cost on interfaces #}
+{% if rline['cost'] == '0' %}
+ no ip ospf cost
+{%else%}
+ ip ospf cost {{ rline['cost'] }}
+{% endif %}
+{# Configure Network Type on interfaces #}
+{% if 'net_type' in rline %}
+ ip ospf network {{rline['net_type']}}
+{% endif %}
+{% endfor %}
+{% endif %}

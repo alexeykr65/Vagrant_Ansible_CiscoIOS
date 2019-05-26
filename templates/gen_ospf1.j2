@@ -1,0 +1,20 @@
+{# Configure interfaces for IOS #}
+{% if ansible_network_os == 'ios' %}
+router ospf 1
+ router-id {{ interfaces[inventory_hostname][0][1] | ipaddr('address') }}
+ network 0.0.0.0 255.255.255.255 area 0
+
+{# Configure interfaces for IOS-XR #}
+{% elif ansible_network_os == 'iosxr' %}
+router ospf 1
+ router-id {{ interfaces[inventory_hostname][0][1] | ipaddr('address') }}
+ area 0
+{% for str_interfaces in interfaces[inventory_hostname] %}
+{% if str_interfaces|length > 2 %}
+  interface {{ str_interfaces[0] }}.{{ str_interfaces[2] }}
+{% else %}
+  interface {{ str_interfaces[0] }}
+{% endif %}
+{% endfor %}
+
+{% endif %}

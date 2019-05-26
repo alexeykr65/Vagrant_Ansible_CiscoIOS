@@ -1,0 +1,56 @@
+interfaces:
+  R1:
+    - ['Loopback0', '1.1.1.1/32']
+    - ['GigabitEthernet1', '10.1.2.1/24', '12']
+  R2:
+    - ['Loopback0', '2.2.2.2/32']
+    - ['GigabitEthernet1', '20.2.3.2/24', '23']
+    - ['GigabitEthernet1', '20.2.4.2/24', '24']
+    - ['GigabitEthernet1', '10.1.2.2/24', '12']
+    - ['GigabitEthernet1', '10.1.2.2/24', '12']
+  R3:
+    - ['Loopback0', '3.3.3.3/32']
+    - ['GigabitEthernet1', '20.2.3.3/24', '23']
+    - ['GigabitEthernet1', '20.3.4.3/24', '34']
+    - ['GigabitEthernet1', '20.3.6.3/24', '36']
+  R4:
+    - ['Loopback0', '4.4.4.4/32']
+    - ['GigabitEthernet1', '20.2.4.4/24', '24']
+    - ['GigabitEthernet1', '20.3.4.4/24', '34']
+    - ['GigabitEthernet1', '20.4.5.4/24', '45']
+    - ['GigabitEthernet1', '20.4.6.4/24', '46']
+  R5:
+    - ['Loopback0', '5.5.5.5/32']
+    - ['GigabitEthernet1', '20.4.5.5/24', '45']
+    - ['GigabitEthernet1', '20.5.6.5/24', '56']
+    - ['GigabitEthernet1', '20.5.19.5/24', '519']
+  R6:
+    - ['Loopback0', '6.6.6.6/32']
+    - ['GigabitEthernet1', '20.3.6.6/24', '36']
+    - ['GigabitEthernet1', '20.4.6.6/24', '46']
+    - ['GigabitEthernet1', '20.5.6.6/24', '56']
+    - ['GigabitEthernet1', '20.6.19.6/24', '619']
+  XR1:
+    - ['Loopback0', '19.19.19.19/32']
+    - ['GigabitEthernet0/0/0/0', '20.5.19.19/24', '519']
+    - ['GigabitEthernet0/0/0/0', '20.6.19.19/24', '619']
+    - ['GigabitEthernet0/0/0/0', '10.19.20.19/24', '1920']
+  XR2:
+    - ['Loopback0', '20.20.20.20/32']
+    - ['GigabitEthernet0/0/0/0', '10.19.20.20/24', '1920']
+vrfs:
+  R2:
+    - "vrf definition VPN_A"
+    - " rd 100:1"
+    - " route-target export 100:1"
+    - " route-target import 100:1"
+    - " !"
+    - " address-family ipv4"
+    - " exit-address-family"
+  XR1:
+    - "vrf VPN_A"
+    - " address-family ipv4 unicast"
+    - "  import route-target"
+    - "   100:1"
+    - "  export route-target"
+    - "   100:1"

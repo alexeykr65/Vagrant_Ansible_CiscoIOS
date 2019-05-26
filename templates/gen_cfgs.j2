@@ -1,0 +1,26 @@
+{# Configure interfaces for IOS #}
+{% if ansible_network_os == 'ios' %}
+{% for str_interfaces in interfaces[inventory_hostname] %}
+{% if str_interfaces|length > 2 %}
+interface {{ str_interfaces[0] }}.{{ str_interfaces[2] }}
+ encapsulation dot1Q {{ str_interfaces[2] }}
+ ip address {{ str_interfaces[1] | ipaddr('address') }} {{ str_interfaces[1] | ipaddr('netmask') }}
+{% else %}
+interface {{ str_interfaces[0] }}
+ ip address {{ str_interfaces[1] | ipaddr('address') }} {{ str_interfaces[1] | ipaddr('netmask') }}
+{% endif %}
+{% endfor %}
+
+{# Configure interfaces for IOS-XR #}
+{% elif ansible_network_os == 'iosxr' %}
+{% for str_interfaces in interfaces[inventory_hostname] %}
+{% if str_interfaces|length > 2 %}
+interface {{ str_interfaces[0] }}.{{ str_interfaces[2] }}
+ ipv4 address {{ str_interfaces[1] | ipaddr('address') }} {{ str_interfaces[1] | ipaddr('netmask') }}
+ encapsulation dot1q {{ str_interfaces[2] }}
+{% else %}
+interface {{ str_interfaces[0] }}
+ ipv4 address {{ str_interfaces[1] | ipaddr('address') }} {{ str_interfaces[1] | ipaddr('netmask') }}
+{% endif %}
+{% endfor %}
+{% endif %}

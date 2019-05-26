@@ -1,0 +1,16 @@
+{% for interface in host.interfaces %}
+{# Configure interfaces for IOS #}
+{% if interface|length > 2 %}
+interface {{ interface[0] }}.{{ interface[2] }}
+ encapsulation dot1Q {{ interface[2] }}
+ ip address {{ interface[1] | ipaddr('address') }} {{ interface[1] | ipaddr('netmask') }}
+{% else %}
+interface {{ interface[0] }}
+ ip address {{ interface[1] | ipaddr('address') }} {{ interface[1] | ipaddr('netmask') }}
+{% endif %}
+interface {{ interface[0] }}
+ no shutdown
+{% endfor %}
+
+
+

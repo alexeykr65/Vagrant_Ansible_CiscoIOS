@@ -1,0 +1,85 @@
+---
+- name: Configure Interfaces on Cisco vIOS Vagrant
+  hosts: all
+  connection: local
+  gather_facts: false
+  user: vagrant
+
+  vars_files:
+    - "src_cfg/vagrant_01.yml"
+  
+  tasks:
+    - name: "Reset Interfaces"
+      ios_config:
+        lines: "default interface {{ item[0] }}"
+      loop: "{{ interfaces[inventory_hostname] }}"
+      register: result_reset
+      tags:
+        - int_reset
+
+    - name: "Run configuration interfaces"
+      ios_config:
+        src: templates/int_gen_vagrant.j2
+        backup: no
+      register: result_int
+      tags:
+        - conf_int
+        - int_reset
+
+    - name: "Configure hostname"
+      ios_config: 
+        lines: 
+          - "hostname {{ inventory_hostname }}"
+      tags:
+        - conf_int        
+
+    - name: "UP interfaces"
+      ios_interface:
+        name: "{{ item[0] }}"
+        enabled: True
+      loop: "{{ interfaces[inventory_hostname] }}"
+      register: result_up
+      tags:
+        - conf_int
+        - int_reset
+
+    - name: "Save Configuration "
+      ios_command: 
+        commands: wr mem
+      when: result_int.changed or result_up.changed
+      tags:
+        - conf_int
+        - int_reset        
+
+    - name: "Enable CDP"
+      ios_config: 
+        lines: 
+          - "cdp run"
+      tags:
+        - conf_cdp
+
+    - name: Ping addresses for checking
+      ios_ping:
+        dest: "{{ item }}"
+      loop: "{{ ping_check_base[inventory_hostname] }}"
+      tags: 
+        - ping_int
+
+    - name: Ping Loopback addresses for checking
+      ios_ping:
+        dest: "{{ item }}"
+      loop: "{{ ping_check_loop[inventory_hostname] }}"
+      tags: 
+        - ping_loop
+
+    # - name: gather ios_facts
+    #   ios_facts:
+    #   register: version
+    #   tags:
+    #   - gen_facts_ios
+
+    # - name: View IOS Facts
+    #   debug:
+    #     msg: "CSR Version - {{version.ansible_facts.ansible_net_version}}"
+    #   tags:
+    #   - gen_facts_ios

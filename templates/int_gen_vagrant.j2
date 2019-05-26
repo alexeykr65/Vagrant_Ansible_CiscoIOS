@@ -1,0 +1,14 @@
+{# Configure interfaces for IOS #}
+{% for str_interfaces in interfaces[inventory_hostname] %}
+{% if str_interfaces|length > 2 %}
+interface {{ str_interfaces[0] }}.{{ str_interfaces[2] }}
+ encapsulation dot1Q {{ str_interfaces[2] }}
+ ip address {{ str_interfaces[1] | ipaddr('address') }} {{ str_interfaces[1] | ipaddr('netmask') }}
+{% else %}
+interface {{ str_interfaces[0] }}
+ ip address {{ str_interfaces[1] | ipaddr('address') }} {{ str_interfaces[1] | ipaddr('netmask') }}
+{% endif %}
+{% endfor %}
+
+
+

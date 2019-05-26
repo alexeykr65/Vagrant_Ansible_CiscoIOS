@@ -1,0 +1,5 @@
+---
+vios:
+  username: 'vagrant'
+  password: 'vagrant'
+  platform: 'ios'

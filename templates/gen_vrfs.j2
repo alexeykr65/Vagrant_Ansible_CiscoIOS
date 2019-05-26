@@ -1,0 +1,7 @@
+{% if vrfs is defined %}
+{% if vrfs[inventory_hostname] is defined %}
+{% for str_vrf in vrfs[inventory_hostname] %}
+{{ str_vrf }}
+{% endfor %}
+{% endif %}
+{% endif %}
